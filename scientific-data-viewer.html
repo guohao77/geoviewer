@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A React implementation of the Mines JTK Mosaic tiled scientific graphics model." />
+  <title>Mosaic — Scientific Graphics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/scientific-data-viewer.css" />
+</head>
+<body>
+  <div id="root"></div>
+
+  <!--
+    Declarative Mosaic definition: each view's data attribute references a
+    JSON script tag. Give each data view its own data="#tag-id"
+    reference; no mosaic-level data-source attribute is required.
+  -->
+  <mosaic-viewer id="science-mosaic" rows="2" columns="2"
+    axes="top left bottom right" data-title="Mosaic sample data">
+    <mosaic-tile row="0" column="0" x-label="x coordinate" y-label="y coordinate">
+      <!-- interpolation accepts nearest, linear/bilinear, or cubic/bicubic/smooth -->
+      <pixels-view data="#field-data" color-map="shared" interpolation="cubic"></pixels-view>
+      <grid-view color="rgba(230, 237, 245, 0.20)"></grid-view>
+
+      <interpretation-view id="bar-picks" color="#44d7b6" opacity="0.8" line-width="3"></interpretation-view>
+    </mosaic-tile>
+    <mosaic-tile row="0" column="1" x-label="x coordinate" y-label="scalar value">
+      <grid-view color="rgba(230, 237, 245, 0.18)"></grid-view>
+      <contours-view data="#field-data" color-map="shared" levels="12" interpolation="cubic"></contours-view>
+      <!-- Transparent pick overlay; Tab toggles pick mode. -->
+      <interpretation-view id="field-picks" color="#ff5d73" opacity="0.9" line-width="2.5"></interpretation-view>
+    </mosaic-tile>
+    <mosaic-tile row="1" column="0" x-label="x · scalar field" y-label="bar height">
+      <grid-view></grid-view>
+      <bars-view data="#bar-data" color="#70a7ff" width="0.72"></bars-view>
+      <interpretation-view id="bar-picks" color="#44d7b6" opacity="0.8" line-width="3"></interpretation-view>
+    </mosaic-tile>
+    <mosaic-tile row="1" column="1" x-label="x · scalar field" y-label="signal value">
+      <grid-view></grid-view>
+      <points-view data="#signal-data" color="#f7b267" line-width="1.9"></points-view>
+    </mosaic-tile>
+  </mosaic-viewer>
+  <script type="application/json" id="field-data">
+    {
+        "values": [
+          [0.02, 0.04, 0.08, 0.10, 0.08, 0.04, 0.02, 0.01, 0.01],
+          [0.04, 0.12, 0.25, 0.27, 0.18, 0.08, 0.04, 0.03, 0.02],
+          [0.08, 0.25, 0.68, 0.55, 0.23, 0.12, 0.10, 0.08, 0.04],
+          [0.10, 0.28, 0.82, 0.63, 0.25, 0.16, 0.28, 0.38, 0.16],
+          [0.08, 0.20, 0.55, 0.45, 0.22, 0.25, 0.72, 0.78, 0.32],
+          [0.05, 0.12, 0.25, 0.25, 0.28, 0.50, 0.88, 0.72, 0.25],
+          [0.03, 0.08, 0.14, 0.18, 0.25, 0.36, 0.44, 0.30, 0.12],
+          [0.02, 0.04, 0.08, 0.12, 0.15, 0.16, 0.14, 0.10, 0.05],
+          [0.01, 0.02, 0.04, 0.05, 0.06, 0.05, 0.04, 0.03, 0.01]
+        ]
+    }
+  </script>
+  <script type="application/json" id="bar-data">
+    {
+        "x": [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8],
+        "y": [0.25, 0.38, 0.62, 0.96, 1.27, 1.44, 1.51, 1.39, 1.13, 0.81, 0.56, 0.39, 0.30, 0.27, 0.31, 0.38, 0.43]
+    }
+  </script>
+  <script type="application/json" id="signal-data">
+    {
+        "x": [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8],
+        "y": [0, 0.52, 0.79, 0.45, -0.20, -0.72, -0.78, -0.39, 0.18, 0.52, 0.43, 0.04, -0.34, -0.42, -0.15, 0.18, 0.24]
+    }
+  </script>
+
+  <!-- React renders the declarative mosaic into the root above. -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script type="module" src="js/mosaic/MosaicReact.js"></script>
+</body>
+</html>
